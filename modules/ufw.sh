@@ -7,8 +7,11 @@ configure_ufw() {
         log_info "Installing UFW..."
 
         apt install -y ufw
+
     else
+
         log_skip "UFW already installed."
+
     fi
 
     log_info "Configuring UFW..."
@@ -16,7 +19,9 @@ configure_ufw() {
     ufw default deny incoming
     ufw default allow outgoing
 
-    ufw allow OpenSSH
+    if ! ufw status | grep -q "OpenSSH"; then
+        ufw allow OpenSSH
+    fi
 
     if ! ufw status | grep -q "Status: active"; then
         ufw --force enable
